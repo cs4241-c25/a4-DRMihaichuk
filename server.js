@@ -2,33 +2,98 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 const app = express();
 import cors from 'cors';
+import passport from 'passport';
+import session from 'express-session';
+import { Strategy as GitHubStrategy } from 'passport-github2';
+import dotenv from 'dotenv';
+dotenv.config();
 
+
+const {
+    MONGO_USER,
+    MONGO_PASS,
+    MONGO_HOST,
+    GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET,
+    EXPRESS_SESSION_SECRET
+} = process.env;
+
+console.log(process.env.EXPRESS_SESSION_SECRET);
+
+app.use(session({
+    secret: EXPRESS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static('src'));
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:5173'
 }));
 
-const url = "mongodb+srv://drmihaichuk:Bls294652!@cluster0.prazh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const url = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}`;
 const dbconnect = new MongoClient(url);
 
 async function run() {
     await dbconnect.connect().then(() => console.log("Connected!"));
     let pokemon_collection = await dbconnect.db("PokemonCollection").collection("Pokemon");
-    let user_collection = await dbconnect.db("PokemonCollection").collection("Users");
+    // let user_collection = await dbconnect.db("PokemonCollection").collection("Users");
 
-    app.get('/', (req, res) => {
-        res.send("src/index.html")
-    })
+    passport.serializeUser(function (user, done) {
+        // I use user._id || user.id to allow for more flexibility of this with MongoDB.
+        // If using Passport Local, you might want to use the MongoDB id object as the primary key.
+        // However, we are using GitHub, so what we want is user.id
+        // Feel free to remove the user._id || part of it, but the `user.id` part is necessary.
+        done(null, { username: user.username, id: user._id || user.id });
+    });
+
+    passport.deserializeUser(function (obj, done) {
+        done(null, obj);
+    });
+
+    passport.use(new GitHubStrategy({
+            clientID: GITHUB_CLIENT_ID,
+            clientSecret: GITHUB_CLIENT_SECRET,
+            callbackURL: "http://localhost:3000/auth/github/callback"
+        },
+        async function (accessToken, refreshToken, profile, done) {
+            // This code will run when the user is successfully logged in with GitHub.
+            process.nextTick(function () {
+                return done(null, profile);
+            });
+        }
+    ));
+
+    app.get('/auth/github/callback',
+        passport.authenticate('github', { session: true, failureRedirect: '/login' }),
+        function (req, res) {
+            // Successful authentication, redirect home.
+            res.redirect('/');
+            console.log(req.user.username);
+        });
+
+    app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+    function ensureAuth(req, res, next) {
+        if (req.isAuthenticated()) {
+            next();
+        } else {
+            res.redirect("/login");
+        }
+    }
+
+    app.get('/', ensureAuth, (req, res) => {
+        console.log("test:req");
+        // User is logged in
+        res.sendFile(__dirname + "/index.html");
+    });
 
 
-    app.post("/load", async (req, res) => {
+    app.post("/gen-table", async (req, res) => {
         // try {
-            console.log("Received request to /load");
-
             const user = req.body;
-
-            console.log("User data received:", user);
 
             if (!user.Trainer) {
                 return res.status(400).json({ error: 'Trainer field is required' });
@@ -43,8 +108,6 @@ async function run() {
                 return res.status(404).json({ message: 'No data found for this trainer' });
             }
 
-            console.log("Data found:", content);
-
             res.send(JSON.stringify(content));
 
         // } catch (err) {
@@ -53,20 +116,20 @@ async function run() {
         // }
     });
 
-    app.post("/login",  async (req, res) => {
-        let dataString = "";
+    app.get("/login", (req, res) => {
+        // User is logged in
+        if (req.user) {
+            res.redirect("/");
+        } else {
+            // User is not logged in
+            res.sendFile(__dirname + "/login.html");
+        }
+    });
 
-        req.on( "data", function( data ) {
-            dataString += data;
-        });
-
-        req.on( "end", async () => {
-            let userauth = JSON.parse( dataString );
-            const user = await user_collection.findOne({"Trainer": userauth.Trainer,
-                "Password": userauth.Password}, {projection: {"_id": 0, "Trainer":1}});
-            res.send( JSON.stringify(user));
-        });
-    })
+    app.get("/logout", (req, res) => {
+        req.logout(() => { });
+        res.redirect('/login');
+    });
 
     app.post("/add", (req, res) => {
         let dataString = "";
@@ -132,7 +195,15 @@ async function run() {
     })
 
     app.use((req, res) => {
-        res.status(404).sendFile(__dirname + '/public/404.html');
+        res.status(404).sendFile(__dirname + '/404.html');
+    });
+
+    app.get("/load", ensureAuth, async (req, res) => {
+        // Note that here I am using the username as the key.
+        const userdata = await pokemon_collection.find({ trainer: req.user.username }).toArray();
+        // What I am doing here is attaching the username to the front of the array
+        // and then putting the rest of the data after the username
+        res.json([{ username: req.user.username }, ...userdata]);
     });
 }
 const appRun = run();

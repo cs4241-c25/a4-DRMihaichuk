@@ -11,7 +11,7 @@ const Results = () => {
     const body = {Trainer: localStorage.getItem('trainer')};
 
     useEffect(() => {
-        axios.post(`http://localhost:3000/load`, body)
+        axios.post(`http://localhost:3000/gen-table`, body)
             .then(response => setData(response.data))
             .catch(error => console.error('Error fetching data:', error));
     }, [body]);
