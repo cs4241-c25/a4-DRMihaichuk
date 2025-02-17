@@ -8,7 +8,6 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 const {
     MONGO_USER,
     MONGO_PASS,
@@ -90,6 +89,13 @@ async function run() {
         res.sendFile(__dirname + "/index.html");
     });
 
+    app.get('/api/user', (req, res) => {
+        if (req.isAuthenticated()) {
+            res.json({ user: req.user });
+        } else {
+            res.status(401).json({ message: 'Not authenticated' });
+        }
+    });
 
     app.post("/gen-table", async (req, res) => {
         // try {
@@ -118,17 +124,21 @@ async function run() {
 
     app.get("/login", (req, res) => {
         // User is logged in
-        if (req.user) {
+        if (req.isAuthenticated) {
             res.redirect("/");
         } else {
             // User is not logged in
-            res.sendFile(__dirname + "/login.html");
+            res.sendFile(__dirname + "/index.html");
         }
     });
 
     app.get("/logout", (req, res) => {
-        req.logout(() => { });
-        res.redirect('/login');
+        req.logout((err) => {
+            if (err) {
+                return res.status(500).send("Failed to log out");
+            }
+            res.redirect("/login");  // Redirect to login page after logging out.
+        });
     });
 
     app.post("/add", (req, res) => {

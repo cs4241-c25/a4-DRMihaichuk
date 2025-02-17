@@ -1,22 +1,48 @@
-import { useState } from 'react'
-import './App.css'
-import Title from "./Title.jsx";
-import AddForm  from "./AddForm.jsx";
-import Results from "./Table.jsx";
+import {useEffect, useState} from 'react';
+import './App.css';
+import Title from './Title.jsx';
+import AddForm from './AddForm.jsx';
+import Results from './Table.jsx';
+import axios from 'axios';
 
 function App() {
-    // localStorage.setItem('loggedIn', 'true');
-    // localStorage.setItem('trainer', 'Super Nerd Devin');
-    // console.log(localStorage.getItem('trainer'));
+    // State for storing the logged-in status and user info
+    const [user, setUser] = useState(null);
 
+    // Check if user is authenticated when the component mounts
+    useEffect(() => {
+        axios.get('/api/user')
+            .then((response) => {
+                setUser(response.data.user);  // If authenticated, set user info
+            })
+            .catch((error) => {
+                setUser(null);  // If not authenticated, set user as null
+            });
+    }, []);
+
+    const handleLogout = () => {
+        window.location.href = '/logout';  // Redirect to logout route on server
+    };
+
+    // If the user is not authenticated, show the login button or redirect
+    if (!user) {
+        return (
+            <div>
+                <p>Please log in to continue</p>
+                <a href="/auth/github"><button id="loginButton">Login with GitHub</button></a>
+            </div>
+        );
+    }
+
+    // If the user is authenticated, show the rest of the app
     return (
         <>
-            <a href="/logout"><button id="logoutButton">Logout</button></a> <br/>
-            <Title/>
-            <AddForm/>
-            <Results/>
+            <button id="logoutButton" onClick={handleLogout}>Log out</button> <br/>
+            <Title />
+            <AddForm />
+            <Results />
         </>
-    )
+    );
 }
 
-export default App
+export default App;
