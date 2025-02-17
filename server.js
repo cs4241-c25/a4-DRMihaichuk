@@ -1,11 +1,13 @@
-const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
+import express from 'express';
+import { MongoClient } from 'mongodb';
 const app = express();
-const cors = require('cors');
+import cors from 'cors';
 
 app.use(express.static('src'));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+}));
 
 const url = "mongodb+srv://drmihaichuk:Bls294652!@cluster0.prazh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const dbconnect = new MongoClient(url);
@@ -19,24 +21,59 @@ async function run() {
         res.send("src/index.html")
     })
 
-    app.post("/load", async (req, res) => {
-        console.log("hello");
+    // app.post("/load", async (req, res) => {
+    //     console.log("hello");
+    //
+    //     let dataString = "";
+    //
+    //     req.on( "data", function( data ) {
+    //         dataString += data;
+    //     });
+    //
+    //     console.log("Hello There");
+    //
+    //     req.on( "end", async () => {
+    //         let user = JSON.parse( dataString );
+    //         const content = await pokemon_collection.find(
+    //             {"Trainer": user.Trainer}, {projection: {"_id":0, "Trainer":0}}).toArray()
+    //         res.send( JSON.stringify(content))
+    //     });
+    // })
 
-        // let dataString = "";
-        //
-        // req.on( "data", function( data ) {
-        //     dataString += data;
-        // });
-        //
-        // console.log("Hello There");
-        //
-        // req.on( "end", async () => {
-        //     let user = JSON.parse( dataString );
-        //     const content = await pokemon_collection.find(
-        //         {"Trainer": user.Trainer}, {projection: {"_id":0, "Trainer":0}}).toArray()
-        //     res.send( JSON.stringify(content))
-        // });
-    })
+    app.post("/load", async (req, res) => {
+        try {
+            console.log("Received request to /load");
+
+            // Use req.body instead of manually parsing the incoming data
+            const user = req.body;
+
+            console.log("User data received:", user);
+
+            // Ensure the user has a Trainer property before querying
+            if (!user.Trainer) {
+                return res.status(400).json({ error: 'Trainer field is required' });
+            }
+
+            // Database query using the Trainer field
+            const content = await pokemon_collection.find(
+                { "Trainer": user.Trainer },
+                { projection: { "_id": 0, "Trainer": 0 } }
+            ).toArray();
+
+            // Check if data was found and send a response
+            if (content.length === 0) {
+                return res.status(404).json({ message: 'No data found for this trainer' });
+            }
+
+            console.log("Data found:", content);
+
+            res.send(JSON.stringify(content));
+
+        } catch (err) {
+            console.error("Error during request handling:", err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
 
     app.post("/login",  async (req, res) => {
         let dataString = "";
@@ -147,4 +184,4 @@ const calculateSpecialty = (pokemon) => {
     return spec;
 }
 
-app.listen(process.env.PORT || 5173);
+app.listen(3000);
