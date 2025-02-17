@@ -72,8 +72,6 @@ const AddForm = () => {
                 return JSON.stringify(json)
         }
 
-
-
     return (
         <>
                 <form className="grid-form">
