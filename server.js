@@ -75,9 +75,9 @@ async function run() {
     ));
 
     app.get('/auth/github/callback',
-        passport.authenticate('github', { session: true, failureRedirect: 'https://a4-drmihaichuk-backend.onrender.com/' }),
+        passport.authenticate('github', { session: true, failureRedirect: 'https://a4-drmihaichuk.onrender.com/' }),
         function (req, res) {
-            res.redirect('https://a4-drmihaichuk-backend.onrender.com/');
+            res.redirect('https://a4-drmihaichuk.onrender.com/');
             console.log(req.user.username);
             console.log(req.isAuthenticated())
         });
