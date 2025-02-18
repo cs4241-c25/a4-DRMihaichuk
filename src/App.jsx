@@ -5,27 +5,26 @@ import AddForm from './AddForm.jsx';
 import axios from 'axios';
 
 function App() {
-    // State for storing the logged-in status and user info
     const [user, setUser] = useState(null);
 
-    // Check if user is authenticated when the component mounts
+    // Check if user is authenticated
     useEffect(() => {
         axios.get('http://localhost:3000/api/user', { withCredentials: true })
             .then((response) => {
                 if (response.data.user) {
                     console.log("User Authenticated:", response.data.user);
-                    setUser(response.data.user);  // User is authenticated
+                    setUser(response.data.user);
                 } else {
-                    setUser(null);  // Handle non-authenticated state
+                    setUser(null);
                 }
             })
     }, []);
 
     const handleLogout = () => {
-        window.location.href = 'http://localhost:3000/logout';  // Redirect to logout route on server
+        window.location.href = 'http://localhost:3000/logout';
     };
 
-    // If the user is not authenticated, show the login button or redirect
+    // If the user is not authenticated, show the login button
     if (!user) {
         return (
             <div>

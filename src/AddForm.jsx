@@ -16,20 +16,21 @@ const AddForm = () => {
                     setUser(response.data.user);
                     fetchPokemonData(response.data.user.username);
                 } else {
-                    setUser(null);  // Handle non-authenticated state
+                    setUser(null);
                 }
             })
     }, []);
 
+    // Fetch Pokémon data for the trainer
     const fetchPokemonData = (trainer) => {
-        // Fetch Pokémon data for the trainer
         axios.post("http://localhost:3000/gen-table", { Trainer: trainer })
             .then((response) => {
-                setData(response.data);  // Update the state with the fetched data
+                setData(response.data);
             })
             .catch((error) => console.error("Error fetching table data:", error));
     };
 
+    // Adding data to table
     const add = (body) => {
         axios.post("http://localhost:3000/add", body)
             .then(response => {
@@ -39,6 +40,7 @@ const AddForm = () => {
             .catch(error => console.error('Error adding Pokémon:', error));
     };
 
+    // Removing data from table
     const remove = (body) => {
         axios.post("http://localhost:3000/remove", body)
             .then(response => {
@@ -48,18 +50,21 @@ const AddForm = () => {
             .catch(error => console.error('Error removing Pokémon:', error));
     };
 
+    // Launcher for add
     const handleAdd = (event) => {
         event.preventDefault();
-        const body = definebody();  // Get the body from the form
-        add(body);  // Pass the body to handleAdd
+        const body = definebody();
+        add(body);
     };
 
+    // Launcher for remove
     const handleRemove = (event) => {
         event.preventDefault();
-        const body = definebody();  // Get the body from the form
-        remove(body);  // Pass the body to handleRemove
+        const body = definebody();
+        remove(body);
     };
 
+    // Generates the body given the information
     const definebody = () => {
             const species = document.querySelector("#pkmnSpecies"),
                 name = document.querySelector( "#pkmnName" ),
@@ -82,15 +87,15 @@ const AddForm = () => {
     return (
         <>
             <form className="grid-form">
-                <label htmlFor="pkmnName">Pokemon's Name: </label><input type="text" id="pkmnName" maxLength="20"/> <br/>
-                <label htmlFor="pkmnSpecies"> Pokemon's Species:</label><input type="text" id="pkmnSpecies"/><br/>
-                <label htmlFor="pkmnHP">Pokemon's HP Stat: </label><input type="text" id="pkmnHP"/> <br/>
-                <label htmlFor="pkmnAttack">Pokemon's Attack Stat: </label><input type="text" id="pkmnAttack"/> <br/>
-                <label htmlFor="pkmnDefense">Pokemon's Defense Stat: </label><input type="text" id="pkmnDefense"/> <br/>
-                <label htmlFor="pkmnSpAttack">Pokemon's Special Attack Stat: </label><input type="text" id="pkmnSpAttack"/>
+                <label htmlFor="pkmnName">Pokemon&#39;s Name: </label><input type="text" id="pkmnName" maxLength="20"/> <br/>
+                <label htmlFor="pkmnSpecies"> Pokemon&#39;s Species:</label><input type="text" id="pkmnSpecies"/><br/>
+                <label htmlFor="pkmnHP">Pokemon&#39;s HP Stat: </label><input type="text" id="pkmnHP"/> <br/>
+                <label htmlFor="pkmnAttack">Pokemon&#39;s Attack Stat: </label><input type="text" id="pkmnAttack"/> <br/>
+                <label htmlFor="pkmnDefense">Pokemon&#39;s Defense Stat: </label><input type="text" id="pkmnDefense"/> <br/>
+                <label htmlFor="pkmnSpAttack">Pokemon&#39;s Special Attack Stat: </label><input type="text" id="pkmnSpAttack"/>
                 <br/>
-                <label htmlFor="pkmnSpDefense">Pokemon's Special Defense Stat: </label><input type="text" id="pkmnSpDefense"/> <br/>
-                <label htmlFor="pkmnSpeed">Pokemon's Speed Stat: </label><input type="text" id="pkmnSpeed"/> <br/>
+                <label htmlFor="pkmnSpDefense">Pokemon&#39;s Special Defense Stat: </label><input type="text" id="pkmnSpDefense"/> <br/>
+                <label htmlFor="pkmnSpeed">Pokemon&#39;s Speed Stat: </label><input type="text" id="pkmnSpeed"/> <br/>
                 <div className="radio-container">
                     <input type="radio" id="m" name="pkmnGender" value="Male"/>
                     <label htmlFor="m">Male</label>
