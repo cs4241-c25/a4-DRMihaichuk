@@ -150,8 +150,6 @@ async function run() {
             res.redirect("https://a4-drmihaichuk-backend.onrender.com/");
         } else {
             console.log("Sending to index");
-            // User is not logged in
-            // res.sendFile(__dirname + "/index.html");
             res.redirect('https://a4-drmihaichuk.onrender.com/');
         }
     });
