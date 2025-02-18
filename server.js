@@ -60,10 +60,6 @@ async function run() {
     // let user_collection = await dbconnect.db("PokemonCollection").collection("Users");
 
     passport.serializeUser(function (user, done) {
-        // I use user._id || user.id to allow for more flexibility of this with MongoDB.
-        // If using Passport Local, you might want to use the MongoDB id object as the primary key.
-        // However, we are using GitHub, so what we want is user.id
-        // Feel free to remove the user._id || part of it, but the `user.id` part is necessary.
         done(null, { username: user.username, id: user._id || user.id });
     });
 
