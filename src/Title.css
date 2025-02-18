@@ -1,0 +1,31 @@
+ul {
+    list-style: none;
+    padding-left: 1%;
+    padding-bottom: 2%;
+}
+
+li {
+    position: relative;
+    padding-left: 30px;
+    text-align: left;
+}
+
+/*li:hover {*/
+/*    filter: drop-shadow(0 0 2em #ffff00);*/
+/*}*/
+/*li.react:hover {*/
+/*    filter: drop-shadow(0 0 2em #ffff00);*/
+/*}*/
+
+li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-image: url('./assets/pokeball.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}

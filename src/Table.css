@@ -1,0 +1,13 @@
+table, td, th {
+    border: 1px solid;
+    min-width: 8vw;
+    margin-left: auto;
+    margin-right: auto;
+    color: darkgoldenrod;
+}
+
+@media (prefers-color-scheme: light) {
+    table, td, th {
+        color: #242424;
+    }
+}
