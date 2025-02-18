@@ -11,7 +11,7 @@ function App() {
 
     // Check if user is authenticated when the component mounts
     useEffect(() => {
-        axios.get('/api/user')
+        axios.get('http://localhost:3000/api/user')
             .then((response) => {
                 setUser(response.data.user);  // If authenticated, set user info
             })
@@ -21,7 +21,7 @@ function App() {
     }, []);
 
     const handleLogout = () => {
-        window.location.href = '/logout';  // Redirect to logout route on server
+        window.location.href = 'http://localhost:3000/logout';  // Redirect to logout route on server
     };
 
     // If the user is not authenticated, show the login button or redirect
@@ -29,7 +29,7 @@ function App() {
         return (
             <div>
                 <p>Please log in to continue</p>
-                <a href="/auth/github"><button id="loginButton">Login with GitHub</button></a>
+                <a href="http://localhost:3000/auth/github"><button id="loginButton">Login with GitHub</button></a>
             </div>
         );
     }

@@ -7,6 +7,11 @@ import session from 'express-session';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import dotenv from 'dotenv';
 dotenv.config();
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const {
     MONGO_USER,
@@ -66,10 +71,9 @@ async function run() {
     ));
 
     app.get('/auth/github/callback',
-        passport.authenticate('github', { session: true, failureRedirect: '/login' }),
+        passport.authenticate('github', { session: true, failureRedirect: 'http://localhost:5173/' }),
         function (req, res) {
-            // Successful authentication, redirect home.
-            res.redirect('/');
+            res.redirect('http://localhost:5173/');
             console.log(req.user.username);
         });
 
@@ -79,12 +83,13 @@ async function run() {
         if (req.isAuthenticated()) {
             next();
         } else {
-            res.redirect("/login");
+            res.redirect("http://localhost:3000/login");
         }
     }
 
     app.get('/', ensureAuth, (req, res) => {
         console.log("test:req");
+        console.log(__dirname);
         // User is logged in
         res.sendFile(__dirname + "/index.html");
     });
@@ -125,7 +130,7 @@ async function run() {
     app.get("/login", (req, res) => {
         // User is logged in
         if (req.isAuthenticated) {
-            res.redirect("/");
+            res.redirect("http://localhost:3000/");
         } else {
             // User is not logged in
             res.sendFile(__dirname + "/index.html");
@@ -137,7 +142,7 @@ async function run() {
             if (err) {
                 return res.status(500).send("Failed to log out");
             }
-            res.redirect("/login");  // Redirect to login page after logging out.
+            res.redirect("http://localhost:3000/login");  // Redirect to login page after logging out.
         });
     });
 
