@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:5173';
+axios.defaults.baseURL = 'https://a4-drmihaichuk.onrender.com';
 
 // vvv was mad at me, so I did this vvv
 // eslint-disable-next-line react/prop-types

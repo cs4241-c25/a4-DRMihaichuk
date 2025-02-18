@@ -9,7 +9,7 @@ const AddForm = () => {
 
     // Check if user is authenticated when the component mounts
     useEffect(() => {
-        axios.get('http://localhost:3000/api/user', { withCredentials: true })
+        axios.get('https://a4-drmihaichuk-backend.onrender.com/api/user', { withCredentials: true })
             .then((response) => {
                 if (response.data.user) {
                     console.log(response.data.user);
@@ -23,7 +23,7 @@ const AddForm = () => {
 
     // Fetch Pokémon data for the trainer
     const fetchPokemonData = (trainer) => {
-        axios.post("http://localhost:3000/gen-table", { Trainer: trainer })
+        axios.post("https://a4-drmihaichuk-backend.onrender.com/gen-table", { Trainer: trainer })
             .then((response) => {
                 setData(response.data);
             })
@@ -32,7 +32,7 @@ const AddForm = () => {
 
     // Adding data to table
     const add = (body) => {
-        axios.post("http://localhost:3000/add", body)
+        axios.post("https://a4-drmihaichuk-backend.onrender.com/add", body)
             .then(response => {
                 console.log(response.data);
                 fetchPokemonData(user.username);  // Re-fetch the data after adding
@@ -42,7 +42,7 @@ const AddForm = () => {
 
     // Removing data from table
     const remove = (body) => {
-        axios.post("http://localhost:3000/remove", body)
+        axios.post("https://a4-drmihaichuk-backend.onrender.com/remove", body)
             .then(response => {
                 console.log(response.data);
                 fetchPokemonData(user.username);  // Re-fetch the data after removing

@@ -9,7 +9,7 @@ function App() {
 
     // Check if user is authenticated
     useEffect(() => {
-        axios.get('http://localhost:3000/api/user', { withCredentials: true })
+        axios.get('https://a4-drmihaichuk-backend.onrender.com/api/user', { withCredentials: true })
             .then((response) => {
                 if (response.data.user) {
                     console.log("User Authenticated:", response.data.user);
@@ -21,7 +21,7 @@ function App() {
     }, []);
 
     const handleLogout = () => {
-        window.location.href = 'http://localhost:3000/logout';
+        window.location.href = 'https://a4-drmihaichuk-backend.onrender.com/logout';
     };
 
     // If the user is not authenticated, show the login button
@@ -29,7 +29,7 @@ function App() {
         return (
             <div>
                 <p>Please log in to continue</p>
-                <a href="http://localhost:3000/auth/github"><button id="loginButton">Login with GitHub</button></a>
+                <a href="https://a4-drmihaichuk-backend.onrender.com/auth/github"><button id="loginButton">Login with GitHub</button></a>
             </div>
         );
     }

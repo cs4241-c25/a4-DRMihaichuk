@@ -37,7 +37,7 @@ app.use(passport.session());
 // app.use(express.static('src'));
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://a4-drmihaichuk.onrender.com',
     credentials: true
 }));
 
@@ -64,7 +64,7 @@ async function run() {
     passport.use(new GitHubStrategy({
             clientID: GITHUB_CLIENT_ID,
             clientSecret: GITHUB_CLIENT_SECRET,
-            callbackURL: "http://localhost:3000/auth/github/callback"
+            callbackURL: "https://a4-drmihaichuk-backend.onrender.com/auth/github/callback"
         },
         async function (accessToken, refreshToken, profile, done) {
             // This code will run when the user is successfully logged in with GitHub.
@@ -75,9 +75,9 @@ async function run() {
     ));
 
     app.get('/auth/github/callback',
-        passport.authenticate('github', { session: true, failureRedirect: 'http://localhost:3000/' }),
+        passport.authenticate('github', { session: true, failureRedirect: 'https://a4-drmihaichuk-backend.onrender.com/' }),
         function (req, res) {
-            res.redirect('http://localhost:5173/');
+            res.redirect('https://a4-drmihaichuk.onrender.com/');
             console.log(req.user.username);
             console.log(req.isAuthenticated())
         });
@@ -88,7 +88,7 @@ async function run() {
         if (req.isAuthenticated()) {
             next();
         } else {
-            res.redirect("http://localhost:3000/login");
+            res.redirect("https://a4-drmihaichuk-backend.onrender.com/login");
         }
     }
 
@@ -137,12 +137,12 @@ async function run() {
         // User is logged in
         console.log(req.isAuthenticated());
         if (req.isAuthenticated()) {
-            res.redirect("http://localhost:3000/");
+            res.redirect("https://a4-drmihaichuk-backend.onrender.com/");
         } else {
             console.log("Sending to index");
             // User is not logged in
             // res.sendFile(__dirname + "/index.html");
-            res.redirect('http://localhost:5173/');
+            res.redirect('https://a4-drmihaichuk.onrender.com/');
         }
     });
 
@@ -153,7 +153,7 @@ async function run() {
             }
             console.log("Should be logged out");
             console.log(req.isAuthenticated());
-            res.redirect("http://localhost:3000/login");  // Redirect to login page after logging out.
+            res.redirect("https://a4-drmihaichuk-backend.onrender.com/login");  // Redirect to login page after logging out.
         });
     });
 
