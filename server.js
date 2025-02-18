@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import * as path from "node:path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,6 +22,8 @@ const {
     GITHUB_CLIENT_SECRET,
     EXPRESS_SESSION_SECRET
 } = process.env;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 console.log(process.env.EXPRESS_SESSION_SECRET);
 
@@ -31,10 +34,11 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static('src'));
-app.use(express.json());
+// app.use(express.static('src'));
+app.use(express.static(path.join(__dirname, 'src')));
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: 'http://localhost:5173',
+    credentials: true
 }));
 
 const url = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}`;
@@ -71,10 +75,11 @@ async function run() {
     ));
 
     app.get('/auth/github/callback',
-        passport.authenticate('github', { session: true, failureRedirect: 'http://localhost:5173/' }),
+        passport.authenticate('github', { session: true, failureRedirect: 'http://localhost:3000/' }),
         function (req, res) {
             res.redirect('http://localhost:5173/');
             console.log(req.user.username);
+            console.log(req.isAuthenticated())
         });
 
     app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
@@ -98,7 +103,7 @@ async function run() {
         if (req.isAuthenticated()) {
             res.json({ user: req.user });
         } else {
-            res.status(401).json({ message: 'Not authenticated' });
+            res.status(204).json({ message: 'Not authenticated, please log in.' });
         }
     });
 
@@ -129,11 +134,14 @@ async function run() {
 
     app.get("/login", (req, res) => {
         // User is logged in
-        if (req.isAuthenticated) {
+        console.log(req.isAuthenticated());
+        if (req.isAuthenticated()) {
             res.redirect("http://localhost:3000/");
         } else {
+            console.log("Sending to index");
             // User is not logged in
-            res.sendFile(__dirname + "/index.html");
+            // res.sendFile(__dirname + "/index.html");
+            res.redirect('http://localhost:5173/');
         }
     });
 
@@ -142,6 +150,8 @@ async function run() {
             if (err) {
                 return res.status(500).send("Failed to log out");
             }
+            console.log("Should be logged out");
+            console.log(req.isAuthenticated());
             res.redirect("http://localhost:3000/login");  // Redirect to login page after logging out.
         });
     });
