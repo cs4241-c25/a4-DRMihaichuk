@@ -11,6 +11,7 @@ function App() {
     useEffect(() => {
         axios.get('https://a4-drmihaichuk-backend.onrender.com/api/user', { withCredentials: true })
             .then((response) => {
+                console.log(response)
                 if (response.data.user) {
                     console.log("User Authenticated:", response.data.user);
                     setUser(response.data.user);
