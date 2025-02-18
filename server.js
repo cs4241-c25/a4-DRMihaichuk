@@ -46,7 +46,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(express.static('src'));
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(cors({
     origin: 'https://a4-drmihaichuk.onrender.com',
@@ -59,7 +58,6 @@ const dbconnect = new MongoClient(url);
 async function run() {
     await dbconnect.connect().then(() => console.log("Connected!"));
     let pokemon_collection = await dbconnect.db("PokemonCollection").collection("Pokemon");
-    let user_collection = await dbconnect.db("PokemonCollection").collection("GitUser");
 
     passport.serializeUser(function (user, done) {
         done(null, { username: user.username, id: user._id || user.id });
