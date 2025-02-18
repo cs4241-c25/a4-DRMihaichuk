@@ -33,8 +33,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: false, // Set to true if using HTTPS in production
-        maxAge: 1000 * 60 * 60 * 24 // Cookie expiration (1 day)
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24
     }
 }));
 app.use(passport.initialize());
