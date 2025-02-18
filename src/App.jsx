@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react';
 import './App.css';
 import Title from './Title.jsx';
 import AddForm from './AddForm.jsx';
-import Results from './Table.jsx';
 import axios from 'axios';
 
 function App() {
