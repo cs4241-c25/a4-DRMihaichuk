@@ -10,6 +10,7 @@ dotenv.config();
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as path from "node:path";
+import MongoStore from 'connect-mongo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,6 +32,10 @@ app.use(session({
     secret: EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}`,
+        ttl: 14 * 24 * 60 * 60, // Session TTL (time-to-live) in seconds (14 days here)
+    }),
     cookie: {
         httpOnly: false,
         secure: true,
