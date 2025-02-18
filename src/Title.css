@@ -10,13 +10,6 @@ li {
     text-align: left;
 }
 
-/*li:hover {*/
-/*    filter: drop-shadow(0 0 2em #ffff00);*/
-/*}*/
-/*li.react:hover {*/
-/*    filter: drop-shadow(0 0 2em #ffff00);*/
-/*}*/
-
 li::before {
     content: '';
     position: absolute;

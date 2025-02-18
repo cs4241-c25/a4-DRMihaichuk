@@ -1,38 +1,40 @@
 import axios from 'axios';
-import './Table.css'
 
 axios.defaults.baseURL = 'http://localhost:5173';
 
 
+// eslint-disable-next-line react/prop-types
 const Results = ({data}) => {
     const generateTable = (pokemonList) => {
-        if (!pokemonList || pokemonList.length === 0) {
+        if (!pokemonList || pokemonList.length === 0 || pokemonList.length === undefined) {
             console.log("No pokemon found");
             return <p>No Pokémon found.</p>;
         }
-
-        return (
-            <table>
-                <thead>
-                <tr>
-                    {Object.keys(pokemonList[0]).map((key) => (
-                        <th key={key}>{key}</th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody>
-                {pokemonList.map((rowData, index) => (
-                    <tr key={index}>
-                        {Object.values(rowData).map((value, i) => (
-                            <td key={i}>
-                                {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value}
-                            </td>
+        else {
+            console.log(pokemonList.length)
+            return (
+                <table>
+                    <thead>
+                    <tr>
+                        {Object.keys(pokemonList[0]).map((key) => (
+                            <th key={key}>{key}</th>
                         ))}
                     </tr>
-                ))}
-                </tbody>
-            </table>
-        );
+                    </thead>
+                    <tbody>
+                    {pokemonList.map((rowData, index) => (
+                        <tr key={index}>
+                            {Object.values(rowData).map((value, i) => (
+                                <td key={i}>
+                                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            );
+        }
     };
 
 

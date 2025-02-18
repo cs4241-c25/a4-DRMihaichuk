@@ -91,16 +91,19 @@ const AddForm = () => {
                 <br/>
                 <label htmlFor="pkmnSpDefense">Pokemon's Special Defense Stat: </label><input type="text" id="pkmnSpDefense"/> <br/>
                 <label htmlFor="pkmnSpeed">Pokemon's Speed Stat: </label><input type="text" id="pkmnSpeed"/> <br/>
-                <input type="radio" id="m" name="pkmnGender" value="Male"/>
-                <label htmlFor="m">Male</label>
-                <input type="radio" id="f" name="pkmnGender" value="Female"/>
-                <label htmlFor="f">Female</label>
-                <input type="radio" id="n" name="pkmnGender" value="Genderless" defaultChecked={true}/>
-                <label htmlFor="n">Genderless</label> <br/>
+                <div className="radio-container">
+                    <input type="radio" id="m" name="pkmnGender" value="Male"/>
+                    <label htmlFor="m">Male</label>
+                    <input type="radio" id="f" name="pkmnGender" value="Female"/>
+                    <label htmlFor="f">Female</label>
+                    <input type="radio" id="n" name="pkmnGender" value="Genderless" defaultChecked={true}/>
+                    <label htmlFor="n">Genderless</label> <br/>
+                </div>
                 <label htmlFor="pkmnShiny">Is Shiny? </label><input type="checkbox" id="pkmnShiny"/> <br/>
                 <button id="addbut" onClick={handleAdd}>Add/Edit</button>
                 <button id="rembut" onClick={handleRemove}>Remove</button>
             </form>
+            <br/>
             <Results data={data}/>
         </>
 
