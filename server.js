@@ -84,7 +84,7 @@ async function run() {
         passport.authenticate('github', { session: true, failureRedirect: 'https://a4-drmihaichuk.onrender.com/' }),
         function (req, res) {
             res.redirect('https://a4-drmihaichuk.onrender.com/');
-            curr_user = req.user;
+            curr_user = {id: req.id, username: req.user.username};
             console.log(curr_user);
             console.log(req.user.username);
             console.log(req.isAuthenticated());
