@@ -15,6 +15,8 @@ import MongoStore from 'connect-mongo';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+let curr_user = null;
+
 const {
     MONGO_USER,
     MONGO_PASS,
@@ -57,7 +59,7 @@ const dbconnect = new MongoClient(url);
 async function run() {
     await dbconnect.connect().then(() => console.log("Connected!"));
     let pokemon_collection = await dbconnect.db("PokemonCollection").collection("Pokemon");
-    // let user_collection = await dbconnect.db("PokemonCollection").collection("Users");
+    let user_collection = await dbconnect.db("PokemonCollection").collection("GitUser");
 
     passport.serializeUser(function (user, done) {
         done(null, { username: user.username, id: user._id || user.id });
@@ -84,8 +86,10 @@ async function run() {
         passport.authenticate('github', { session: true, failureRedirect: 'https://a4-drmihaichuk.onrender.com/' }),
         function (req, res) {
             res.redirect('https://a4-drmihaichuk.onrender.com/');
+            curr_user = req.user;
+            console.log(curr_user);
             console.log(req.user.username);
-            console.log(req.isAuthenticated())
+            console.log(req.isAuthenticated());
         });
 
     app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
