@@ -100,6 +100,7 @@ async function run() {
     });
 
     app.get('/api/user', (req, res) => {
+        console.log(req.isAuthenticated())
         if (req.isAuthenticated()) {
             res.json({ user: req.user });
         } else {
@@ -121,7 +122,7 @@ async function run() {
             ).toArray();
 
             if (content.length === 0) {
-                return res.status(404).json({ message: 'No data found for this trainer' });
+                return res.status(200).json({ message: 'No data found for this trainer', data: [] });
             }
 
             res.send(JSON.stringify(content));
@@ -156,16 +157,9 @@ async function run() {
         });
     });
 
-    app.post("/add", (req, res) => {
-        let dataString = "";
+    app.post("/add", async (req, res) => {
 
-        req.on( "data", function( data ) {
-            dataString += data;
-        });
-
-        req.on( "end", async () => {
-            console.log( JSON.parse( dataString ) );
-            let newPokemon = JSON.parse( dataString );
+            const newPokemon = req.body;
 
             if (newPokemon.Pokemon !== "" && newPokemon.Name !== "") {
                 for (const index in newPokemon) {
@@ -193,19 +187,10 @@ async function run() {
                 }
             }
             res.sendStatus(204);
-        })
     });
 
-    app.post("/remove", (req, res) => {
-        let dataString = "";
-
-        req.on( "data", function( data ) {
-            dataString += data;
-        });
-
-        req.on("end", async function () {
-            console.log(JSON.parse(dataString));
-            const remPokemon = JSON.parse(dataString);
+    app.post("/remove", async (req, res) => {
+        const remPokemon = req.body;
 
             if (remPokemon.Name !== "" && remPokemon.Trainer !== "") {
                 await pokemon_collection.deleteOne({
@@ -213,10 +198,6 @@ async function run() {
             }
 
             res.sendStatus(204);
-            // const content = await pokemon_collection.find(
-            //     {"Trainer": remPokemon.Trainer},{projection: {"_id":0, "Trainer":0}}).toArray()
-            // res.send( JSON.stringify(content))
-        });
     })
 
     app.use((req, res) => {

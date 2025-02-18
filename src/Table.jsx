@@ -5,17 +5,7 @@ import './Table.css'
 axios.defaults.baseURL = 'http://localhost:5173';
 
 
-const Results = () => {
-    const [data, setData] = useState(null)
-    
-    const body = {Trainer: localStorage.getItem('trainer')};
-
-    useEffect(() => {
-        axios.post(`http://localhost:3000/gen-table`, body)
-            .then(response => setData(response.data))
-            .catch(error => console.error('Error fetching data:', error));
-    }, [body]);
-
+const Results = ({data}) => {
     const generateTable = (pokemonList) => {
         if (!pokemonList || pokemonList.length === 0) {
             console.log("No pokemon found");

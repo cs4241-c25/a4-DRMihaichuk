@@ -11,16 +11,10 @@ function App() {
 
     // Check if user is authenticated when the component mounts
     useEffect(() => {
-        // axios.get('http://localhost:3000/api/user', { withCredentials: true })
-        //     .then((response) => {
-        //         setUser(response.data.user);  // If authenticated, set user info
-        //     })
-        //     .catch((error) => {
-        //         setUser(null);  // If not authenticated, set user as null
-        //     });
         axios.get('http://localhost:3000/api/user', { withCredentials: true })
             .then((response) => {
                 if (response.data.user) {
+                    console.log("User Authenticated:", response.data.user);
                     setUser(response.data.user);  // User is authenticated
                 } else {
                     setUser(null);  // Handle non-authenticated state
@@ -48,7 +42,6 @@ function App() {
             <button id="logoutButton" onClick={handleLogout}>Log out</button> <br/>
             <Title />
             <AddForm />
-            <Results />
         </>
     );
 }
