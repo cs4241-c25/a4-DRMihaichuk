@@ -84,7 +84,7 @@ async function run() {
         passport.authenticate('github', { session: true, failureRedirect: 'https://a4-drmihaichuk.onrender.com/' }),
         function (req, res) {
             res.redirect('https://a4-drmihaichuk.onrender.com/');
-            curr_user = {id: req.id, username: req.user.username};
+            curr_user = req.user;
             console.log(curr_user);
             console.log(req.user.username);
             console.log(req.isAuthenticated());
@@ -93,7 +93,7 @@ async function run() {
     app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 
     function ensureAuth(req, res, next) {
-        if (req.isAuthenticated()) {
+        if (curr_user !== null) {
             next();
         } else {
             res.redirect("https://a4-drmihaichuk-backend.onrender.com/login");
@@ -101,16 +101,15 @@ async function run() {
     }
 
     app.get('/', ensureAuth, (req, res) => {
-        console.log("test:req");
         console.log(__dirname);
         // User is logged in
         res.sendFile(__dirname + "/index.html");
     });
 
     app.get('/api/user', (req, res) => {
-        console.log(req.isAuthenticated())
-        if (req.isAuthenticated()) {
-            res.json({ user: req.user });
+        console.log(curr_user !== null)
+        if (curr_user !== null) {
+            res.json(curr_user);
         } else {
             res.status(204).json({ message: 'Not authenticated, please log in.' });
         }
@@ -143,8 +142,8 @@ async function run() {
 
     app.get("/login", (req, res) => {
         // User is logged in
-        console.log(req.isAuthenticated());
-        if (req.isAuthenticated()) {
+        console.log(curr_user !== null);
+        if (curr_user !== null) {
             res.redirect("https://a4-drmihaichuk-backend.onrender.com/");
         } else {
             console.log("Sending to index");
@@ -158,7 +157,7 @@ async function run() {
                 return res.status(500).send("Failed to log out");
             }
             console.log("Should be logged out");
-            console.log(req.isAuthenticated());
+            curr_user = null;
             res.redirect("https://a4-drmihaichuk-backend.onrender.com/login");  // Redirect to login page after logging out.
         });
     });
