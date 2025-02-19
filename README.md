@@ -10,4 +10,4 @@ This assignment is much like my A3 with the user being able to see all Pokemon t
 cohesive table being able to add, edit, and remove Pokemon.
 The main difference between this assignment and A3 is that I have GitHub authentication for the user 
 to login with, it is using the react framework and component design, and the css styling getting an overhaul
-with the use of Tailwind CSS instead of Bootstrap.
+with the use of Tailwind CSS instead of Bootstrap (including different displays for light and dark mode).
