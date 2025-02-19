@@ -107,7 +107,7 @@ async function run() {
     });
 
     app.get('/api/user', (req, res) => {
-        console.log(curr_user !== null)
+        console.log("getting user", curr_user !== null)
         if (curr_user !== null) {
             res.json(curr_user);
         } else {
