@@ -109,7 +109,7 @@ async function run() {
     app.get('/api/user', (req, res) => {
         console.log("getting user", curr_user !== null)
         if (curr_user !== null) {
-            res.json(curr_user);
+            res.json({user: curr_user});
         } else {
             res.status(204).json({ message: 'Not authenticated, please log in.' });
         }
